@@ -1,0 +1,37 @@
+{
+  "name": "cronos",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "vite build && wrangler deploy",
+    "cf-typegen": "wrangler types worker/worker-configuration.d.ts",
+    "schema:generate": "drizzle-kit generate",
+    "schema:migrate": "wrangler d1 migrations apply cronos"
+  },
+  "keywords": [
+    "cronjob",
+    "monitor",
+    "serverless",
+    "cloudflare"
+  ],
+  "author": "vadage",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "drizzle-orm": "^1.0.0-rc.4",
+    "hono": "^4.12.27",
+    "svelte": "^5.56.4"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.42.4",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "drizzle-kit": "^1.0.0-rc.4",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.2",
+    "wrangler": "^4.106.0"
+  }
+}
