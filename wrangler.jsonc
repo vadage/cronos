@@ -3,6 +3,9 @@
   "name": "cronos",
   "main": "worker/index.ts",
   "compatibility_date": "2026-06-30",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "assets": {
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
@@ -17,6 +20,9 @@
       "migrations_pattern": "drizzle/**/*.sql"
     }
   ],
+  "vars": {
+    "DISCORD_WEBHOOK_URL": null
+  },
   "route": {
     "pattern": "cronos.vadage.me",
     "custom_domain": true

@@ -5,6 +5,6 @@
     "moduleResolution": "bundler",
     "strict": true,
     "skipLibCheck": true,
-    "types": ["./worker/worker-configuration.d.ts"]
+    "types": ["./worker/worker-configuration.d.ts", "node"]
   }
 }
