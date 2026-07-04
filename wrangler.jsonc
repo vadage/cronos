@@ -3,13 +3,11 @@
   "name": "cronos",
   "main": "worker/index.ts",
   "compatibility_date": "2026-06-30",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    "run_worker_first": ["/api/*"],
   },
   "d1_databases": [
     {
@@ -17,11 +15,11 @@
       "database_name": "cronos",
       "database_id": "3710cef2-a674-4095-aa09-b38f5ac34354",
       "migrations_dir": "drizzle",
-      "migrations_pattern": "drizzle/**/*.sql"
-    }
+      "migrations_pattern": "drizzle/**/*.sql",
+    },
   ],
   "route": {
     "pattern": "cronos.vadage.me",
-    "custom_domain": true
-  }
+    "custom_domain": true,
+  },
 }

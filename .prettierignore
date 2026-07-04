@@ -1,0 +1,4 @@
+dist
+.wrangler
+worker/worker-configuration.d.ts
+drizzle
