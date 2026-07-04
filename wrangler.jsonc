@@ -20,9 +20,6 @@
       "migrations_pattern": "drizzle/**/*.sql"
     }
   ],
-  "vars": {
-    "DISCORD_WEBHOOK_URL": null
-  },
   "route": {
     "pattern": "cronos.vadage.me",
     "custom_domain": true
