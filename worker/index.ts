@@ -1,7 +1,7 @@
 import {Hono} from "hono"
 import {monitors} from "./db/schema"
 import {eq} from "drizzle-orm"
-import {alertRecovery} from "./lib/alert"
+import {alertFailure, alertRecovery} from "./lib/alert"
 import {getDb, runWithEnv} from "./lib/context";
 
 const app = new Hono<{ Bindings: Env }>()
@@ -24,8 +24,13 @@ app.get('/api/ping/:slug', async c => {
         .set({lastPingAt: Date.now(), status: 'up'})
         .where(eq(monitors.id, existing.id))
 
-    // Should pings between grace period and scheduled handler count as incident?
-    if (existing.status === 'down') {
+    const isLate = existing.lastPingAt
+        && Date.now() > existing.lastPingAt + Number(existing.schedule) * 1000 + existing.gracePeriod * 1000
+
+    if (existing.status === 'down' || isLate) {
+        if (existing.status !== 'down') {
+            await alertFailure(existing.name)
+        }
         await alertRecovery(existing.name)
     }
 
