@@ -1,0 +1,106 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "32428189-d190-4c19-ab0d-7a09151719e2",
+  "prevIds": [
+    "9d113fa9-b9ef-4be5-875f-3bee8a10a70b"
+  ],
+  "ddl": [
+    {
+      "name": "monitor",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "slug",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "schedule_s",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "grace_period_s",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "last_ping_at",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'pending'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "monitor"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "monitor_pk",
+      "table": "monitor",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "slug"
+      ],
+      "nameExplicit": false,
+      "name": "monitor_slug_unique",
+      "entityType": "uniques",
+      "table": "monitor"
+    }
+  ],
+  "renames": [
+    "monitor.schedule->monitor.schedule_s",
+    "monitor.grace_period->monitor.grace_period_s"
+  ]
+}

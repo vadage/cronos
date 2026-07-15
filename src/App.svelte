@@ -1,6 +1,19 @@
 <script lang="ts">
-  let count = $state(0)
+  import { client } from "./lib/client"
+
+  async function getMonitors() {
+    const result = await client.monitors.$get()
+    return result.json()
+  }
 </script>
 
-<h1>Dashboard</h1>
-<button onclick={() => count++}>clicked {count} times</button>
+{#await getMonitors()}
+  <p>Loading monitors...</p>
+{:then monitors}
+  <p>{monitors.length} monitors</p>
+  {#each monitors as monitor (monitor.id)}
+    <p>{monitor.name}</p>
+  {/each}
+{:catch error}
+  <p>Error loading monitors: {error.message}</p>
+{/await}

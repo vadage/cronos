@@ -1,46 +1,15 @@
 import { Hono } from "hono"
-import { monitors } from "./db/schema"
-import { eq } from "drizzle-orm"
-import { alertFailure, alertRecovery } from "./lib/alert"
-import { getDb, runWithEnv } from "./lib/context"
+import { withEnv } from "./middleware/env"
+import { pingRouter } from "./routes/ping"
+import { monitorsRouter } from "./routes/monitors"
 
-const app = new Hono<{ Bindings: Env }>()
+const apiRouter = new Hono()
+  .use(withEnv)
+  .route("/ping", pingRouter)
+  .route("/monitors", monitorsRouter)
 
-app.use(async (c, next) => runWithEnv(c.env, next))
-
-app.get("/api/ping/:slug", async (c) => {
-  const db = getDb()
-  const { slug } = c.req.param()
-
-  const [existing] = await db
-    .select()
-    .from(monitors)
-    .where(eq(monitors.slug, slug))
-
-  if (!existing) {
-    return c.notFound()
-  }
-
-  await db
-    .update(monitors)
-    .set({ lastPingAt: Date.now(), status: "up" })
-    .where(eq(monitors.id, existing.id))
-
-  const isLate =
-    existing.lastPingAt &&
-    Date.now() >
-      existing.lastPingAt +
-        Number(existing.schedule) * 1000 +
-        existing.gracePeriod * 1000
-
-  if (existing.status === "down" || isLate) {
-    if (existing.status !== "down") {
-      await alertFailure(existing.name)
-    }
-    await alertRecovery(existing.name)
-  }
-
-  return c.body("ok")
-})
+const app = new Hono().route("/api", apiRouter)
 
 export default app
+
+export type ApiType = typeof apiRouter
