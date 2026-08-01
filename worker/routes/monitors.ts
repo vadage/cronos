@@ -7,8 +7,8 @@ import { nanoid } from "nanoid"
 import { eq } from "drizzle-orm"
 
 const bodySchema = z.object({
-  name: z.string().min(3).max(16),
-  scheduleSeconds: z.number().int().min(60),
+  name: z.string().min(3).max(32),
+  scheduleSeconds: z.number().int().min(60).multipleOf(60),
   gracePeriodSeconds: z.number().int().min(0),
 })
 

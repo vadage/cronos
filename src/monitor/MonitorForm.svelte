@@ -33,7 +33,7 @@
       id="name"
       required
       minlength="3"
-      maxlength="16"
+      maxlength="32"
       bind:value={name}
     />
   </div>
@@ -46,6 +46,7 @@
       id="schedule-seconds"
       required
       min="60"
+      step="60"
       bind:value={scheduleSeconds}
     />
   </div>
