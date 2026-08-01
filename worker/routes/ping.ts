@@ -14,7 +14,7 @@ export const pingRouter = new Hono().get("/:slug", async (c) => {
     .where(eq(monitors.slug, slug))
 
   if (!existing) {
-    return c.notFound()
+    return c.json({ error: "Monitor not found" }, 404)
   }
 
   await db
