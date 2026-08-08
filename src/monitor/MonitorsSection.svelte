@@ -11,6 +11,7 @@
   import DialogTrigger from "../component/dialog/DialogTrigger.svelte"
   import { client } from "../lib/client"
   import { untrack } from "svelte"
+  import Button from "../component/Button.svelte"
 
   type Props = {
     monitors: Monitor[]
@@ -21,9 +22,11 @@
 
   const DIALOG_ID = "monitor-dialog"
   const FORM_ID = "monitor-form"
+  const DELETE_DIALOG_ID = "monitor-delete-dialog"
 
   let editingMonitor: Monitor | undefined = $state()
   let formKey = $state(0)
+  let deletingMonitor: Monitor | undefined = $state()
 
   function openDialog(monitor?: Monitor) {
     editingMonitor = monitor
@@ -57,18 +60,50 @@
       dialog.close()
     }
   }
+
+  function openDeleteDialog(monitor: Monitor) {
+    deletingMonitor = monitor
+  }
+
+  async function handleDelete() {
+    if (!deletingMonitor) {
+      return
+    }
+
+    const res = await client.monitors[":id"].$delete({
+      param: { id: String(deletingMonitor.id) },
+    })
+    if (!res.ok) {
+      return
+    }
+
+    monitors = monitors.filter((monitor) => monitor !== deletingMonitor)
+
+    const dialog = document.getElementById(DELETE_DIALOG_ID)
+    if (dialog instanceof HTMLDialogElement) {
+      dialog.close()
+    }
+  }
 </script>
 
+<DialogTrigger for={DIALOG_ID} onclick={() => openDialog()}>Add</DialogTrigger>
+
+{#each monitors as monitor (monitor.id)}
+  <p>
+    {monitor.name}
+    <DialogTrigger for={DIALOG_ID} onclick={() => openDialog(monitor)}>
+      Edit
+    </DialogTrigger>
+    <DialogTrigger
+      for={DELETE_DIALOG_ID}
+      onclick={() => openDeleteDialog(monitor)}
+    >
+      Delete
+    </DialogTrigger>
+  </p>
+{/each}
+
 <Dialog id={DIALOG_ID}>
-  <DialogTrigger onclick={() => openDialog()}>Add</DialogTrigger>
-
-  {#each monitors as monitor (monitor.id)}
-    <p>
-      {monitor.name}
-      <DialogTrigger onclick={() => openDialog(monitor)}>Edit</DialogTrigger>
-    </p>
-  {/each}
-
   <DialogContent>
     <DialogHeader>
       <DialogTitle>
@@ -87,6 +122,23 @@
     </DialogBody>
     <DialogFooter>
       <input type="submit" value="Save" form={FORM_ID} />
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+<Dialog id={DELETE_DIALOG_ID}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Delete dialog</DialogTitle>
+    </DialogHeader>
+    <DialogBody>
+      {#if deletingMonitor}
+        Do you really want to delete "{deletingMonitor.name}"? This action is
+        irreversible.
+      {/if}
+    </DialogBody>
+    <DialogFooter>
+      <Button onclick={handleDelete}>Delete</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
