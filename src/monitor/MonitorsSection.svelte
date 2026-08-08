@@ -66,18 +66,19 @@
   }
 
   async function handleDelete() {
-    if (!deletingMonitor) {
+    const target = deletingMonitor
+    if (!target) {
       return
     }
 
     const res = await client.monitors[":id"].$delete({
-      param: { id: String(deletingMonitor.id) },
+      param: { id: String(target.id) },
     })
     if (!res.ok) {
       return
     }
 
-    monitors = monitors.filter((monitor) => monitor !== deletingMonitor)
+    monitors = monitors.filter((monitor) => monitor.id !== target.id)
 
     const dialog = document.getElementById(DELETE_DIALOG_ID)
     if (dialog instanceof HTMLDialogElement) {
@@ -130,6 +131,7 @@
   <DialogContent>
     <DialogHeader>
       <DialogTitle>Delete dialog</DialogTitle>
+      <DialogClose />
     </DialogHeader>
     <DialogBody>
       {#if deletingMonitor}
