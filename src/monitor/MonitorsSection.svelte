@@ -85,6 +85,13 @@
       dialog.close()
     }
   }
+
+  async function copyCurl(monitor: Monitor) {
+    const url = client.ping[":slug"].$url({ param: { slug: monitor.slug } })
+    const command = `curl ${url}`
+
+    await navigator.clipboard.writeText(command)
+  }
 </script>
 
 <DialogTrigger for={DIALOG_ID} onclick={() => openDialog()}>Add</DialogTrigger>
@@ -92,6 +99,7 @@
 {#each monitors as monitor (monitor.id)}
   <p>
     {monitor.name}
+    <Button onclick={() => copyCurl(monitor)}>Copy cURL</Button>
     <DialogTrigger for={DIALOG_ID} onclick={() => openDialog(monitor)}>
       Edit
     </DialogTrigger>
