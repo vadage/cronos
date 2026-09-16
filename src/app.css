@@ -1,0 +1,13 @@
+:root {
+  --background: #181e2b;
+  --foreground: #fcfcfc;
+  --primary: #49b17e;
+
+  color-scheme: dark;
+}
+
+body {
+  font-family: sans-serif;
+  color: var(--foreground);
+  background-color: var(--background);
+}

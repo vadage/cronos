@@ -12,6 +12,11 @@
   import { client } from "../lib/client"
   import { untrack } from "svelte"
   import Button from "../component/Button.svelte"
+  import SquareTerminal from "../icons/SquareTerminal.svelte"
+  import Pencil from "../icons/Pencil.svelte"
+  import Trash from "../icons/Trash.svelte"
+  import Plus from "../icons/Plus.svelte"
+  import { ago } from "../lib/time"
 
   type Props = {
     monitors: Monitor[]
@@ -94,23 +99,50 @@
   }
 </script>
 
-<DialogTrigger for={DIALOG_ID} onclick={() => openDialog()}>Add</DialogTrigger>
+<DialogTrigger for={DIALOG_ID} onclick={() => openDialog()} title="Add">
+  <Plus />
+</DialogTrigger>
 
-{#each monitors as monitor (monitor.id)}
-  <p>
-    {monitor.name}
-    <Button onclick={() => copyCurl(monitor)}>Copy cURL</Button>
-    <DialogTrigger for={DIALOG_ID} onclick={() => openDialog(monitor)}>
-      Edit
-    </DialogTrigger>
-    <DialogTrigger
-      for={DELETE_DIALOG_ID}
-      onclick={() => openDeleteDialog(monitor)}
-    >
-      Delete
-    </DialogTrigger>
-  </p>
-{/each}
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Status</th>
+        <th scope="col">Last Ping</th>
+        <th scope="col" class="row-actions">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each monitors as monitor (monitor.id)}
+        <tr>
+          <td>{monitor.name}</td>
+          <td>{monitor.status}</td>
+          <td>{ago(monitor.lastPingAt)}</td>
+          <td class="row-actions">
+            <Button onclick={() => copyCurl(monitor)} title="Copy cURL">
+              <SquareTerminal />
+            </Button>
+            <DialogTrigger
+              for={DIALOG_ID}
+              onclick={() => openDialog(monitor)}
+              title="Edit"
+            >
+              <Pencil />
+            </DialogTrigger>
+            <DialogTrigger
+              for={DELETE_DIALOG_ID}
+              onclick={() => openDeleteDialog(monitor)}
+              title="Delete"
+            >
+              <Trash />
+            </DialogTrigger>
+          </td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
 
 <Dialog id={DIALOG_ID}>
   <DialogContent>
@@ -130,7 +162,8 @@
       {/key}
     </DialogBody>
     <DialogFooter>
-      <input type="submit" value="Save" form={FORM_ID} />
+      <DialogClose>Cancel</DialogClose>
+      <Button type="submit" form={FORM_ID}>Save</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
@@ -138,7 +171,7 @@
 <Dialog id={DELETE_DIALOG_ID}>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Delete dialog</DialogTitle>
+      <DialogTitle>Delete monitor</DialogTitle>
       <DialogClose />
     </DialogHeader>
     <DialogBody>
@@ -148,7 +181,30 @@
       {/if}
     </DialogBody>
     <DialogFooter>
+      <DialogClose>Cancel</DialogClose>
       <Button onclick={handleDelete}>Delete</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
+
+<style>
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .row-actions {
+    text-align: end;
+  }
+</style>

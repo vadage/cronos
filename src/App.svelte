@@ -8,11 +8,21 @@
   }
 </script>
 
-<h1>Monitors</h1>
-{#await getMonitors()}
-  <p>Loading monitors...</p>
-{:then monitors}
-  <MonitorsSection {monitors} />
-{:catch error}
-  <p>Error loading monitors: {error.message}</p>
-{/await}
+<main>
+  <h1>Monitors</h1>
+  {#await getMonitors()}
+    <p>Loading monitors...</p>
+  {:then monitors}
+    <MonitorsSection {monitors} />
+  {:catch error}
+    <p>Error loading monitors: {error.message}</p>
+  {/await}
+</main>
+
+<style>
+  main {
+    max-width: 48rem;
+    margin-inline: auto;
+    padding: 1rem;
+  }
+</style>

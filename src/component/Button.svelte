@@ -3,10 +3,21 @@
   import type { HTMLButtonAttributes } from "svelte/elements"
 
   type Props = {
+    type?: string
     children: Snippet
   } & HTMLButtonAttributes
 
-  const { children, ...rest }: Props = $props()
+  const { type, children, ...rest }: Props = $props()
 </script>
 
-<button type="button" {...rest}>{@render children()}</button>
+<button type={type ?? "button"} {...rest}>{@render children()}</button>
+
+<style>
+  button {
+    color: var(--primary);
+    font-weight: 600;
+    background: none;
+    border: none;
+    padding: 5px 10px;
+  }
+</style>

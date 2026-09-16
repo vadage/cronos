@@ -8,4 +8,10 @@
   const { children }: Props = $props()
 </script>
 
-<h5>{@render children()}</h5>
+<h2>{@render children()}</h2>
+
+<style>
+  h2 {
+    margin: 0;
+  }
+</style>
