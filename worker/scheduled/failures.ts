@@ -1,4 +1,4 @@
-import { getDb } from "../lib/context"
+import { getDb, getMainHub } from "../lib/context"
 import { monitors } from "../db/schema"
 import { and, eq, sql } from "drizzle-orm"
 import { alertFailure } from "../lib/alert"
@@ -23,6 +23,12 @@ export async function reportFailures() {
       await alertFailure(monitor.name)
     } catch (error) {
       console.error(`alert failed for ${monitor.id}`, error)
+    }
+
+    try {
+      await getMainHub().publish("monitor/status", monitor)
+    } catch (error) {
+      console.error(`main hub publish failed for ${monitor.id}`, error)
     }
   }
 }

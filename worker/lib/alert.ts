@@ -1,6 +1,5 @@
 import { getEnv } from "./context"
 
-// Alerts could also be published over WebSockets for realtime updates in the frontend.
 // Discord Webhooks are fast enough to not require a message queue. This might change with multiple alert channels in the future.
 
 export async function alertFailure(name: string) {

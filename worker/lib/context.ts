@@ -20,3 +20,7 @@ export function getEnv() {
 export function getDb() {
   return drizzle(getEnv().DB)
 }
+
+export function getMainHub() {
+  return getEnv().REALTIME_HUB.getByName("main")
+}

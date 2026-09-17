@@ -1,22 +1,26 @@
-export function ago(timestamp: number | null) {
+const unitsDescending = [
+  { name: "year", seconds: 60 * 60 * 24 * 365 },
+  { name: "month", seconds: 60 * 60 * 24 * 30 },
+  { name: "day", seconds: 60 * 60 * 24 },
+  { name: "hour", seconds: 60 * 60 },
+  { name: "minute", seconds: 60 },
+] as const
+
+const formatter = new Intl.RelativeTimeFormat("en", { style: "long" })
+
+export function ago(timestamp: number | null, now: number) {
   if (timestamp === null) {
     return "never"
   }
 
-  let elapsed = (new Date().getTime() - timestamp) / 1000
-  if (elapsed < 60) {
+  const elapsed = (now - timestamp) / 1000
+  const largestUnit = unitsDescending.find(({ seconds }) => elapsed >= seconds)
+  if (!largestUnit) {
     return "just now"
   }
 
-  const unitNames = ["second", "minute", "hour", "day", "month", "year"]
-  const unitThresholds = [60, 60, 24, 30, 12, 10]
-
-  let unitIndex = 0
-  for (; elapsed >= unitThresholds[unitIndex]!; unitIndex++) {
-    elapsed /= unitThresholds[unitIndex]!
-  }
-
-  elapsed = Math.round(elapsed)
-
-  return `${elapsed} ${unitNames[unitIndex]}${elapsed === 1 ? "" : "s"} ago`
+  return formatter.format(
+    -Math.round(elapsed / largestUnit.seconds),
+    largestUnit.name,
+  )
 }

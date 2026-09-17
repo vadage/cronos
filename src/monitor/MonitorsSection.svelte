@@ -17,6 +17,8 @@
   import Trash from "../icons/Trash.svelte"
   import Plus from "../icons/Plus.svelte"
   import { ago } from "../lib/time"
+  import { now } from "../lib/now"
+  import { subscribe } from "../lib/realtime"
 
   type Props = {
     monitors: Monitor[]
@@ -97,6 +99,14 @@
 
     await navigator.clipboard.writeText(command)
   }
+
+  $effect(() =>
+    subscribe("monitor/status", (updated) => {
+      monitors = monitors.map((monitor) =>
+        monitor.id === updated.id ? updated : monitor,
+      )
+    }),
+  )
 </script>
 
 <DialogTrigger for={DIALOG_ID} onclick={() => openDialog()} title="Add">
@@ -118,7 +128,7 @@
         <tr>
           <td>{monitor.name}</td>
           <td>{monitor.status}</td>
-          <td>{ago(monitor.lastPingAt)}</td>
+          <td>{ago(monitor.lastPingAt, now())}</td>
           <td class="row-actions">
             <Button onclick={() => copyCurl(monitor)} title="Copy cURL">
               <SquareTerminal />
