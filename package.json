@@ -8,7 +8,7 @@
     "cf-typegen": "wrangler types worker/worker-configuration.d.ts",
     "schema:generate": "drizzle-kit generate",
     "schema:migrate": "wrangler d1 migrations apply cronos",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "lint": "eslint .",
     "format:check": "prettier --check ."
