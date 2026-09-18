@@ -2,6 +2,7 @@ import { getDb, getMainHub } from "../lib/context"
 import { monitors } from "../db/schema"
 import { and, eq, sql } from "drizzle-orm"
 import { alertFailure } from "../lib/alert"
+import { logOnError } from "../lib/log"
 
 export async function reportFailures() {
   const db = getDb()
@@ -19,16 +20,14 @@ export async function reportFailures() {
     .returning()
 
   for (const monitor of newFailures) {
-    try {
-      await alertFailure(monitor.name)
-    } catch (error) {
-      console.error(`alert failed for ${monitor.id}`, error)
-    }
+    await logOnError(
+      () => alertFailure(monitor.name),
+      `Failed to alert failure for ${monitor.id}.`,
+    )
 
-    try {
-      await getMainHub().publish("monitor/status", monitor)
-    } catch (error) {
-      console.error(`main hub publish failed for ${monitor.id}`, error)
-    }
+    await logOnError(
+      () => getMainHub().publish("monitor/status", monitor),
+      `Failed to publish status to main hub for ${monitor.id}.`,
+    )
   }
 }

@@ -36,7 +36,7 @@ async function sendWebhookUrl(
   description: string,
   color: number,
 ) {
-  await fetch(url, {
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,4 +52,9 @@ async function sendWebhookUrl(
       ],
     }),
   })
+
+  if (!response.ok) {
+    const body = await response.text()
+    throw new Error(`Response (${response.status}): ${body}`)
+  }
 }

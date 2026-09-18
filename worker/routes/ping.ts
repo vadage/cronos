@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm"
 import { getDb, getMainHub } from "../lib/context"
 import { monitors } from "../db/schema"
 import { alertFailure, alertRecovery } from "../lib/alert"
+import { logOnError } from "../lib/log"
 
 export const pingRouter = new Hono().get("/:slug", async (c) => {
   const db = getDb()
@@ -37,12 +38,21 @@ export const pingRouter = new Hono().get("/:slug", async (c) => {
 
   if (existing.status === "down" || isLate) {
     if (existing.status !== "down") {
-      await alertFailure(existing.name)
+      await logOnError(
+        () => alertFailure(existing.name),
+        `Failed to alert failure for ${existing.id}.`,
+      )
     }
-    await alertRecovery(existing.name)
+    await logOnError(
+      () => alertRecovery(existing.name),
+      `Failed to alert recovery for ${existing.id}.`,
+    )
   }
 
-  await getMainHub().publish("monitor/status", { ...existing, ...changes })
+  await logOnError(
+    () => getMainHub().publish("monitor/status", { ...existing, ...changes }),
+    `Failed to publish status to main hub for ${existing.id}.`,
+  )
 
   return c.body("ok")
 })
